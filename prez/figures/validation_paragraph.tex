@@ -1,0 +1,17 @@
+\small
+Sur les runs \textbf{aggTrades}, le resultat \textbf{ETH $\to$ BTC} est traite
+comme un fait empirique a valider, pas comme une intuition de marche. Quatre
+controles independants le soutiennent : l'audit synthetique verrouille la
+convention de signe ; inverser l'ordre BTC/ETH $\leftrightarrow$ ETH/BTC
+inverse exactement les signes ; une correlation previous-tick a 100\,ms
+favorise ETH $\to$ BTC sur chacun des sept jours ; et le test controle
+d'asymetrie de densite de ticks conserve le bon signe hors zone extreme tres
+pauvre en observations.
+\\[0.3em]
+\emph{Caveat critique} : ces controles valident la \textbf{convention de signe}
+et la \textbf{robustesse de l'estimateur} a l'asymetrie de tick density, mais
+\emph{pas la robustesse au proxy de prix}. Sur la meme semaine, le
+synth-midpoint inverse la direction (BTC $\to$ ETH) et le synth-microprice
+quasi-annule le signal. La direction ETH $\to$ BTC n'est donc valide qu'a
+l'echelle du proxy aggTrades et doit etre presentee avec ce caveat. Le finding
+robuste cross-proxy est le \textbf{cross-venue same-asset} (Binance vs Kraken).
