@@ -1,0 +1,10 @@
+{
+  "setup": "BTCUSDT spot (sym1) vs BTCUSDT USDT-M perp (sym2)",
+  "start": "2026-04-13",
+  "end": "2026-04-19",
+  "symbol": "BTCUSDT",
+  "delta_N": 0.05,
+  "jmax": 8,
+  "grid_half_width": 400,
+  "wavelet": "db10"
+}

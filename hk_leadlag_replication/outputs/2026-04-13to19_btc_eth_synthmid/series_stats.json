@@ -1,0 +1,12 @@
+{
+  "n1": 437642,
+  "n2": 461011,
+  "T_start_unix": 1776038400.465176,
+  "T_end_unix": 1776124799.551618,
+  "duration_seconds": 86399.08644199371,
+  "median_dt1_ms": 40.25101661682129,
+  "median_dt2_ms": 3.690481185913086,
+  "mean_dt1_ms": 197.4173939624849,
+  "mean_dt2_ms": 187.41260806054905,
+  "label": "BTCUSDT vs ETHUSDT synth-midpoint (spot)"
+}

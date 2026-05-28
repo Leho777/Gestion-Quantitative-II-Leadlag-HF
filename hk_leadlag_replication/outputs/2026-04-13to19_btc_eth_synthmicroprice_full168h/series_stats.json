@@ -1,0 +1,12 @@
+{
+  "n1": 2858285,
+  "n2": 2786254,
+  "T_start_unix": 1776038400.465176,
+  "T_end_unix": 1776643199.998937,
+  "duration_seconds": 604799.533760786,
+  "median_dt1_ms": 53.009986877441406,
+  "median_dt2_ms": 6.663799285888672,
+  "mean_dt1_ms": 211.5950079212144,
+  "mean_dt2_ms": 217.06554780229436,
+  "label": "BTCUSDT vs ETHUSDT synth-microprice (spot)"
+}

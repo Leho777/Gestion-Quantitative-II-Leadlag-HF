@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hk_leadlag"
+version = "0.1.0"
+description = "Independent Python replication of Hayashi & Koike (2020) - Multi-scale lead-lag in HF markets"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Leo Renault"}]
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "pandas>=2.1",
+    "pywavelets>=1.5",
+    "numba>=0.59",
+    "matplotlib>=3.8",
+    "seaborn>=0.13",
+    "plotly>=5.18",
+    "tqdm>=4.66",
+    "pydantic>=2.5",
+    "pyyaml>=6.0",
+    "requests>=2.31",
+    "websocket-client>=1.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.1",
+    "mypy>=1.8",
+    "ipykernel>=6.28",
+    "jupyterlab>=4.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["hk_leadlag*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+markers = [
+    "slow: marks tests as slower end-to-end checks",
+]

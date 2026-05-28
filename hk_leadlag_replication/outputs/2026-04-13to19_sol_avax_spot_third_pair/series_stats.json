@@ -1,0 +1,12 @@
+{
+  "n1": 1307506,
+  "n2": 140127,
+  "T_start_unix": 1776038400.797021,
+  "T_end_unix": 1776643199.954383,
+  "duration_seconds": 604799.1573619843,
+  "median_dt1_ms": 68.12095642089844,
+  "median_dt2_ms": 479.18546199798584,
+  "mean_dt1_ms": 462.5597281555208,
+  "mean_dt2_ms": 4315.788875548283,
+  "label": "SOLUSDT vs AVAXUSDT (spot)"
+}

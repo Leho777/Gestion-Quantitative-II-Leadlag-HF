@@ -1,0 +1,12 @@
+{
+  "n1": 1030043,
+  "n2": 81021,
+  "T_start_unix": 34200.004241176,
+  "T_end_unix": 37799.980010264,
+  "duration_seconds": 3599.9757690879997,
+  "median_dt1_ms": 0.019241000700276345,
+  "median_dt2_ms": 0.647660497634206,
+  "mean_dt1_ms": 3.4949779535378194,
+  "mean_dt2_ms": 44.43141453810174,
+  "label": "SPY vs AAPL (LOBSTER midpoint)"
+}

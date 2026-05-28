@@ -1,0 +1,11 @@
+{
+  "source": "LOBSTER sample (TU Berlin)",
+  "date": "2012-06-21",
+  "ticker1": "AAPL",
+  "ticker2": "MSFT",
+  "level": 10,
+  "delta_N": 0.001,
+  "jmax": 8,
+  "grid_half_width": 200,
+  "wavelet": "db10"
+}

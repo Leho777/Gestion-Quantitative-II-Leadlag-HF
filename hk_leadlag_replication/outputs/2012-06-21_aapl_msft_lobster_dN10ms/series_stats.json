@@ -1,0 +1,12 @@
+{
+  "n1": 384329,
+  "n2": 611562,
+  "T_start_unix": 34200.004241176,
+  "T_end_unix": 57599.913117637,
+  "duration_seconds": 23399.908876461,
+  "median_dt1_ms": 0.6575350016646553,
+  "median_dt2_ms": 0.07164099952206016,
+  "mean_dt1_ms": 60.88525654248714,
+  "mean_dt2_ms": 38.26256710681027,
+  "label": "AAPL vs MSFT (LOBSTER midpoint)"
+}

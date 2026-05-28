@@ -1,0 +1,5 @@
+{
+  "estimator": "HRY (single-scale baseline)",
+  "delta_N": 0.05,
+  "grid_half_width": 400
+}

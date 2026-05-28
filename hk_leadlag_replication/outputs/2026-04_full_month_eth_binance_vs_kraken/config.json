@@ -1,0 +1,11 @@
+{
+  "setup": "ETHUSDT @ Binance spot (sym1) vs ETHUSD @ Kraken (sym2)",
+  "start": "2026-04-01",
+  "end": "2026-04-30",
+  "binance_symbol": "ETHUSDT",
+  "kraken_pair": "ETHUSD",
+  "delta_N": 0.05,
+  "jmax": 8,
+  "grid_half_width": 400,
+  "wavelet": "db10"
+}

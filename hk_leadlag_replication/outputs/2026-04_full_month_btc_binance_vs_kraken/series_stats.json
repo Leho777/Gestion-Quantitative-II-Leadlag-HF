@@ -1,0 +1,12 @@
+{
+  "n1": 12615384,
+  "n2": 864522,
+  "T_start_unix": 1775001600.062762,
+  "T_end_unix": 1777593598.7890894,
+  "duration_seconds": 2591998.7263274193,
+  "median_dt1_ms": 32.48882293701172,
+  "median_dt2_ms": 1388.181447982788,
+  "mean_dt1_ms": 205.46331828989776,
+  "mean_dt2_ms": 2998.1904606463168,
+  "label": "BTC@Binance vs BTC@Kraken (full April 2026)"
+}

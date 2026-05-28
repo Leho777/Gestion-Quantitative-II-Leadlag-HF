@@ -1,0 +1,11 @@
+{
+  "note": "Synthetic midpoint from aggTrades is_buyer_maker flag",
+  "sym1": "BTCUSDT",
+  "sym2": "ETHUSDT",
+  "market": "spot",
+  "date": "2026-04-13 (1 day)",
+  "delta_N": 0.05,
+  "jmax": 6,
+  "grid_half_width": 200,
+  "wavelet": "db10"
+}

@@ -1,0 +1,12 @@
+{
+  "source": "LOBSTER sample (TU Berlin)",
+  "date": "2012-06-21",
+  "ticker1": "AAPL",
+  "ticker2": "MSFT",
+  "level": 10,
+  "delta_N": 0.01,
+  "jmax": 6,
+  "grid_half_width": 200,
+  "wavelet": "db10",
+  "note": "Re-run with coarser Delta_N to test signal stability."
+}

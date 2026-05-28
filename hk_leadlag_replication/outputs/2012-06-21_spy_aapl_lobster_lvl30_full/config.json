@@ -1,0 +1,14 @@
+{
+  "source": "LOBSTER sample (TU Berlin)",
+  "date": "2012-06-21",
+  "ticker1": "SPY",
+  "ticker2": "AAPL",
+  "level": 30,
+  "data_dir": "C:\\Users\\L\u00e9oRENAULT\\Documents\\projet\\gestion_quant_II\\Gestion_Quantitative_II\\hk_leadlag_replication\\data\\equity",
+  "delta_N": 0.001,
+  "jmax": 8,
+  "grid_half_width": 200,
+  "wavelet": "db10",
+  "start_time_s": null,
+  "end_time_s": null
+}

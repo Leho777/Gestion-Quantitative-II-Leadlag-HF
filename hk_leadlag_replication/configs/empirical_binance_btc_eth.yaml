@@ -1,0 +1,17 @@
+name: empirical_btc_eth
+estimator:
+  wavelet: db10
+  filter_length: 20
+  j_max: 7
+  grid_half_width: 200
+  delta_N: 0.001        # 1 ms
+data:
+  source: binance
+  symbols: [BTCUSDT, ETHUSDT]
+  start_date: "2026-04-01"
+  end_date: "2026-04-30"
+  session_start: "00:00"
+  session_end: "23:59"
+  raw_dir: data/raw
+  processed_dir: data/processed
+output_dir: outputs/empirical_btc_eth

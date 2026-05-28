@@ -1,0 +1,30 @@
+# Data archive for collaborators (never commit, >>100 MB)
+*.tar.gz
+*.tar.bz2
+*.tar
+*.zip
+
+# Python : venv et caches (peuvent etre crees a la racine pour tester)
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual env
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# --- Project-specific ---
+
+# Data: never commit raw/processed (large, regenerable)
+data/raw/
+data/processed/
+# LOBSTER zips are large (~85 MB) + freely redistributable from lobsterdata.com
+data/equity/*.zip
+!data/sample/
+
+# Outputs: heavyweight artefacts are NOT versioned by default.
+# We only commit the small, reproducibility-relevant files.
+outputs/**/*.pkl
+outputs/**/*.png
+outputs/**/*.npy
+outputs/**/*.npz
+outputs/**/bootstrap_dist.pkl
+outputs/**/log.txt
+
+# Whitelist the small reproducibility files (config + metadata + small tables).
+!outputs/**/config.json
+!outputs/**/metadata.json
+!outputs/**/series_stats.json
+!outputs/**/summary.csv
+!outputs/**/bootstrap.json
+
+# Comparison plots at outputs/ root (small set, intentionally tracked)
+# Use figures_for_slides/ if you want a separate tracked folder.
+
+# Misc
+.env
+*.log
+hk_leadlag_replication/hk_leadlag_data.tar.gz

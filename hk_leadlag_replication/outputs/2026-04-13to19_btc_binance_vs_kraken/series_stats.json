@@ -1,0 +1,12 @@
+{
+  "n1": 2902485,
+  "n2": 237986,
+  "T_start_unix": 1776038400.119546,
+  "T_end_unix": 1776643199.907151,
+  "duration_seconds": 604799.7876050472,
+  "median_dt1_ms": 52.600860595703125,
+  "median_dt2_ms": 1101.5572547912598,
+  "mean_dt1_ms": 208.37316850154804,
+  "mean_dt2_ms": 2541.3204416160856,
+  "label": "BTCUSDT@Binance vs XBTUSD@Kraken"
+}

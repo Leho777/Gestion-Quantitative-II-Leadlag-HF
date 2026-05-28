@@ -1,0 +1,12 @@
+{
+  "n1": 155272,
+  "n2": 794214,
+  "T_start_unix": 1776038401.536117,
+  "T_end_unix": 1776643199.971325,
+  "duration_seconds": 604798.4352078438,
+  "median_dt1_ms": 556.7119121551514,
+  "median_dt2_ms": 17.657041549682617,
+  "mean_dt1_ms": 3895.1146149504643,
+  "mean_dt2_ms": 761.5065177578391,
+  "label": "UNIUSDT vs AAVEUSDT (spot)"
+}
