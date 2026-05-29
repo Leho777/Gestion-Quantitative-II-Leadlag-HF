@@ -1,0 +1,11 @@
+{
+  "setup": "BTCUSDT @ Binance spot (sym1) vs XBTUSD @ Kraken (sym2)",
+  "start": "2026-01-01",
+  "end": "2026-01-31",
+  "binance_symbol": "BTCUSDT",
+  "kraken_pair": "XBTUSD",
+  "delta_N": 0.05,
+  "jmax": 8,
+  "grid_half_width": 400,
+  "wavelet": "db10"
+}

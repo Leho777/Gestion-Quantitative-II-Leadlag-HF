@@ -47,7 +47,6 @@ outputs/**/*.pkl
 outputs/**/*.png
 outputs/**/*.npy
 outputs/**/*.npz
-outputs/**/bootstrap_dist.pkl
 outputs/**/log.txt
 
 # Whitelist the small reproducibility files (config + metadata + small tables).
@@ -55,7 +54,6 @@ outputs/**/log.txt
 !outputs/**/metadata.json
 !outputs/**/series_stats.json
 !outputs/**/summary.csv
-!outputs/**/bootstrap.json
 
 # Comparison plots at outputs/ root (small set, intentionally tracked)
 # Use figures_for_slides/ if you want a separate tracked folder.

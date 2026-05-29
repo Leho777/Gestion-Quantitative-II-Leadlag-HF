@@ -33,7 +33,6 @@ NOT included (tracked in git already, redundant)
 * ``outputs/**/metadata.json``
 * ``outputs/**/series_stats.json``
 * ``outputs/**/summary.csv``
-* ``outputs/**/bootstrap.json``
 """
 from __future__ import annotations
 
@@ -55,6 +54,7 @@ INCLUDE_PATTERNS_RAW = [
 INCLUDE_PATTERNS_LIGHT = [
     "data/processed/*.npz",
     "data/equity/*.zip",
+    "data/MANIFEST.md",
     "outputs/**/*.pkl",
     "outputs/**/*.png",
     "outputs/**/log.txt",
@@ -113,7 +113,7 @@ def main(argv: list[str] | None = None) -> int:
     print("Next steps:")
     print(f"  1. Upload {args.out.name} to Google Drive / OneDrive / Dauphine filer.")
     print(f"  2. Get the shareable link.")
-    print(f"  3. Paste the link into COLLABORATOR_HANDOFF.md, section 1.2.")
+    print(f"  3. Share the link with collaborators who need the cached data.")
     print(f"  4. Collaborator extracts with:")
     print(f"     tar -xzf {args.out.name} -C hk_leadlag_replication/")
     return 0

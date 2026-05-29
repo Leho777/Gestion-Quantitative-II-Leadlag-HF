@@ -1,0 +1,13 @@
+{
+  "mode": "binance_vs_bybit",
+  "symbol": "BTCUSDT",
+  "start": "2026-01-01",
+  "end": "2026-01-31",
+  "delta_N": 0.05,
+  "jmax": 8,
+  "grid_half_width": 400,
+  "wavelet": "db10",
+  "min_trades": 5000,
+  "n_days_used": 31,
+  "convention": "theta<0: Binance mene Bybit | theta>0: Bybit mene Binance"
+}

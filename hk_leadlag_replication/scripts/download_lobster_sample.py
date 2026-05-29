@@ -54,8 +54,8 @@ def main(argv: list[str] | None = None) -> int:
     for ticker in args.tickers:
         download_one(ticker, args.level, args.out)
     print(f"\nDone. Files under: {args.out}")
-    print("Next step: build NonSyncSeries from message/orderbook CSVs - see")
-    print("hk_leadlag/data/lobster.py (to be implemented).")
+    print("Next step: build a NonSyncSeries from the message/orderbook CSVs with")
+    print("hk_leadlag/data/lobster.py (LobsterLoader).")
     return 0
 
 

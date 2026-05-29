@@ -28,3 +28,13 @@ __pycache__/
 # OS
 .DS_Store
 Thumbs.db
+._*
+__MACOSX/
+
+# Donnees brutes (lourd, jamais commit)
+data/
+
+# Sorties lourdes regenerables (on GARDE summary.csv + *.json + prez/figures)
+outputs/**/*.pkl
+outputs/**/*.png
+outputs/**/log.txt

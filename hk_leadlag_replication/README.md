@@ -1,208 +1,201 @@
-# HK-LeadLag : Replication of the estimator + crypto adaptation of Hayashi & Koike (2020)
+# HK-LeadLag: estimator replication + crypto adaptation of Hayashi and Koike (2020)
 
-**Multi-scale analysis of lead-lag relationships in high-frequency financial markets**
+**Multi-scale analysis of lead-lag relationships in high-frequency financial markets.**
 
-*arXiv:1708.03992, Independent Python implementation, M2 Quantitative Management II, Paris Dauphine PSL.*
+Independent Python implementation. M2 272 Quantitative Management II, Paris-Dauphine PSL.
 
-> **Scope, calibrated** : we replicate the **estimator** of Hayashi-Koike (HY non-synchronous
-> covariance → Daubechies wavelet convolution → argmax per scale), and adapt it to crypto
-> cross-venue / cross-product data. We do **NOT** literally replicate HK's empirical protocol
-> (NASDAQ vs BATS quote-update micro-prices, 108 stocks × 21 days, ~0.1 ms resolution,
-> SIP/participant timestamps). Specifically:
-> - **Price proxy** : aggTrades on crypto (no historical bookTicker on Binance Vision) vs
->   micro-prices in HK. LOBSTER (NASDAQ only) used as quote-midpoint sanity check, not as
->   NASDAQ-vs-BATS replication.
-> - **Resolution** : Δ_N = 50 ms on crypto vs ~0.1 ms in HK (limited by crypto inter-tick
->   median ~ 30 ms on Binance BTC spot).
-> - **Timestamping** : exchange-API timestamps in crypto, no SIP consolidation. The measured
->   lag may mix true price discovery and reporting conventions.
-> - **Panel design** : a handful of cross-venue / cross-product cases vs 108 × 21 = 2268
->   ticker-days in HK. No systematic panel distribution.
-> - **Estimator comparison** : we benchmark HK vs HRY (single-scale) ; HK paper also compares
->   to Dobrev-Schaumburg, which we have only in simplified form.
+> **Scope (calibrated).** We replicate the **estimator** of Hayashi-Koike (Hayashi-Yoshida
+> non-synchronous covariance, then Daubechies wavelet convolution, then argmax per scale) and
+> adapt it to crypto cross-venue and cross-product data. We do **not** replicate HK's empirical
+> protocol literally (NASDAQ vs BATS quote micro-prices, 108 stocks over 21 days, ~0.1 ms
+> resolution, SIP/participant timestamps). Concretely:
+> - **Price proxy.** aggTrades on crypto (Binance Vision has no historical bookTicker) instead of
+>   quote micro-prices. LOBSTER (NASDAQ only) is used as a quote-midpoint sanity check, not as a
+>   NASDAQ vs BATS replication.
+> - **Resolution.** Delta_N = 50 ms on crypto vs ~0.1 ms in HK (crypto inter-tick median ~ 30 ms
+>   on Binance BTC spot).
+> - **Timestamping.** Exchange-API timestamps, no SIP consolidation. The measured lag can mix
+>   price discovery and reporting conventions.
+> - **Panel.** A handful of cross-venue / cross-product cases vs 108 x 21 = 2268 ticker-days in HK.
+> - **Estimator comparison.** We benchmark HK against HRY (single-scale). The paper also uses
+>   Dobrev-Schaumburg, which we keep only in simplified form.
 
 ## Overview
 
-Modular OOP framework implementing the wavelet-based, scale-by-scale lead-lag
-estimator of Hayashi & Koike (2020) for non-synchronously sampled high-frequency
-financial data. Includes:
+Modular implementation of the wavelet-based, scale-by-scale lead-lag estimator of Hayashi and
+Koike (2020) for non-synchronously sampled high-frequency data. Contents:
 
 - Multi-scale `WaveletLeadLagEstimator` and single-scale `HRYEstimator` baseline.
-- Numba-accelerated Hayashi-Yoshida cross-covariance (88× speedup vs pure Python).
+- Numba-accelerated Hayashi-Yoshida cross-covariance (about 88x faster than pure Python).
 - Bivariate Brownian + Heston + Lo-MacKinlay sampling for Monte Carlo validation.
-- Binance Vision aggTrades loader (auto-detects μs / ms timestamp resolution).
-- LOBSTER (TU Berlin) order-book midpoint loader for equity replication.
-- Block bootstrap confidence intervals on θ̂_j and multiple-testing helpers.
-- Artifact-driven experiment system inspired by reproducible-research conventions.
+- Loaders for Binance Vision aggTrades, Bybit public archive, Kraken REST, and LOBSTER midpoints.
+- Per-day distribution of theta_hat_j across UTC days (analogue of HK's Figure 1).
+- Artifact store for reproducible experiment outputs.
 
-## Convention de signe (à connaître)
+## Sign convention
 
-**θ̂_j > 0 ⇔ sym2 leads sym1.** **θ̂_j < 0 ⇔ sym1 leads sym2.**
+**theta_hat_j > 0 means series 2 leads series 1. theta_hat_j < 0 means series 1 leads series 2.**
 
-Locked by `scripts/audit_sign_convention.py` (synthetic test in both directions). The
-codebase's HY estimator shifts series-2 intervals by `+τ`; alignment when sym1 leads
-requires `τ < 0`, hence the inverted convention vs the paper's narrative.
+Locked by `scripts/audit_sign_convention.py` (synthetic test in both directions). The HY estimator
+shifts series-2 intervals by `+tau`; alignment when series 1 leads requires `tau < 0`, hence the
+convention is inverted relative to the paper's narrative.
 
 ---
 
 ## Quickstart
 
 ```bash
-# Setup (Windows)
-.\setup.bat                           # or: ./setup.sh on Linux/macOS
-
-# Or manually
+# Setup
 python -m venv .venv
-.venv\Scripts\activate                # source .venv/bin/activate on Linux/macOS
+.venv\Scripts\activate                 # source .venv/bin/activate on Linux/macOS
 pip install -r requirements.txt
 pip install -e .
 
-# Verify
-.venv\Scripts\python.exe -m pytest -q # 31 tests, all pass
+# Tests
+.venv\Scripts\python.exe -m pytest -q  # 27 tests
 
-# Sign-convention audit (sanity check before any interpretation)
+# Sign-convention audit (run before interpreting anything)
 python scripts/audit_sign_convention.py
 
-# Run the main empirical experiment (BTC vs ETH, calm week)
+# Core result: same-asset cross-venue (BTC on Binance vs Kraken)
+python scripts/run_cross_exchange_kraken.py \
+    --start 2026-04-01 --end 2026-04-30 \
+    --binance-symbol BTCUSDT --kraken-pair XBTUSD \
+    --name 2026-04_full_month_btc_binance_vs_kraken
+
+# Cross-asset BTC vs ETH (exploratory extension)
 python scripts/run_empirical.py \
     --start 2026-04-13 --end 2026-04-19 \
     --sym1 BTCUSDT --sym2 ETHUSDT --market spot \
     --delta-N 0.05 --jmax 8 --grid-half 400
 
-# Run on FOMC stress week
-python scripts/run_empirical.py \
-    --start 2026-04-27 --end 2026-05-03 \
-    --sym1 BTCUSDT --sym2 ETHUSDT --market spot \
-    --delta-N 0.05 --jmax 8 --grid-half 400
+# Per-day distribution over a month (analogue of HK Figure 1)
+python scripts/run_perday_distribution.py \
+    --mode binance_vs_kraken --symbol BTCUSDT \
+    --start 2026-01-01 --end 2026-01-31
 
-# Run a LOBSTER midpoint pair experiment
+# LOBSTER midpoint pair (equity sanity check)
 python scripts/run_lobster_pair.py \
-    --ticker1 SPY --ticker2 AAPL --level 30 \
+    --ticker1 AAPL --ticker2 MSFT --level 10 \
     --delta-N 0.001 --jmax 8 --grid-half 200
 
-# Bootstrap CI on an existing run
-python scripts/run_bootstrap.py \
-    --run 2026-04-13to19_btc_eth_spot_full168h \
-    --hours-cap 24 --B 100 --block-s 300
-
-# Notebook walkthrough (pedagogical)
-jupyter lab notebooks/01_walkthrough.ipynb
-
-# Notebook narrative (soutenance-ready)
-jupyter lab notebooks/02_main_narrative.ipynb
+# Narrative notebook (defense)
+jupyter lab notebooks/03_final_narrative.ipynb
 ```
 
 ---
 
-## Key results (selected runs)
+## Key results
 
-### Run 1 : BTC vs ETH, calm week (13-19 Apr 2026, Binance spot)
-5.7M ticks, Δ_N = 50 ms, j_max = 8, db10 wavelet.
+The core finding is the **same-asset cross-venue** lead-lag, the closest available analogue of HK's
+NASDAQ-vs-BATS setup. Cross-asset (BTC vs ETH) is kept as an exploratory extension because its
+direction is sensitive to the price proxy.
 
-| j | period (s) | θ̂ (s) | Interpretation |
+### Core: BTC, Binance vs Kraken (April 2026, 30 days, Delta_N = 50 ms, db10)
+
+| j | period (s) | theta_hat (s) | reading |
 |---|---|---|---|
-| 1-3 | 0.1 - 0.8 | 0.00 | No lead-lag (HF efficiency) |
-| 4 | 0.8 - 1.6 | +0.05 | ETH leads BTC 50 ms |
-| 5 | 1.6 - 3.2 | +0.05 | ETH leads BTC 50 ms |
-| 6 | 3.2 - 6.4 | +0.10 | ETH leads BTC 100 ms |
-| 7 | 6.4 - 12.8 | +0.15 | ETH leads BTC 150 ms |
-| 8 | 12.8 - 25.6 | +0.25 | ETH leads BTC 250 ms |
+| 1 | 0.1 - 0.2 | -0.05 | Binance leads Kraken |
+| 4 | 0.8 - 1.6 | -0.30 | Binance leads Kraken |
+| 6 | 3.2 - 6.4 | -0.80 | Binance leads Kraken |
+| 8 | 12.8 - 25.6 | **-1.95** | Binance leads Kraken |
 
-→ See `outputs/2026-04-13to19_btc_eth_spot_full168h/heatmap.png`.
+Monotone profile, Binance ahead at every scale. Direction is invariant across January, February
+and April 2026; amplitude is regime-dependent (February ~ -1.15 s vs ~ -2.0 s in January/April).
+See `../prez/figures/heatmap_btc_binance_vs_kraken_full_month.png`.
 
-### Run 2 : HRY baseline, same data
-θ̂ = 0.00 s. The single-scale estimator collapses all scales into one and **misses the multi-scale signal**.
-→ See `outputs/comparison_hk_vs_hry.png`.
+### HK vs HRY (same BTC/ETH 168h data)
 
-### Run 3 : FOMC stress week (27 Apr - 3 May 2026)
-Same qualitative pattern. Lags **+40% larger at j=8** (250 → 350 ms).
-→ See `outputs/comparison_calm_vs_fomc.png`.
+HK gives a structured multi-scale profile (0, 0, 0, +50, +50, +100, +150, +250 ms over j=1..8);
+the single-scale HRY baseline returns ~0. HRY collapses the scales and misses the signal.
+See `../prez/figures/comparison_hk_vs_hry.png`.
 
-### Run 4 : LOBSTER AAPL vs MSFT, 21 Jun 2012, NYSE midpoints
-Replication of HK's setup (quote midpoints). 1 day only, noisier than crypto runs.
-At j=8 (256-512 ms): AAPL leads MSFT by ~70 ms.
+### Cross-product, same exchange (30 days)
 
-### Run 5 : LOBSTER SPY vs AAPL, 21 Jun 2012, NYSE midpoints
-Equity analogue with an aggregate ETF vs a large constituent, level-30 LOBSTER
-sample over the first hour. SPY has ~1.03M events vs AAPL ~81k. This run is
-resolution-sensitive: with Δ_N = 10 ms, AAPL leads SPY at scales j >= 2; with
-Δ_N = 1 ms, SPY leads AAPL over sub-0.5s horizons by roughly 38-119 ms. Use as
-an illustration that direction can depend on scale/resolution, not as a single
-robust economic direction.
+- BTC and ETH, spot vs USDT-margined perpetual: perp leads spot (+350 ms BTC, +400 ms ETH at j=8).
+- BTC, USDT-margined vs coin-margined perpetual: USDT-M leads (-1.70 s at j=8).
+- BTC, Binance vs Bybit: quasi-synchronous (two HFT-heavy venues).
 
-### Run 6 : SOL vs AVAX, same calm week
-Strong signal, with a larger lag than BTC/ETH. AVAX has 9× fewer ticks than SOL
-yet appears to lead, so the result is presented as an empirical regularity that
-requires caution. A controlled tick-density simulation suggests this is not a
-pure estimator artefact at the observed tick counts.
+### Cross-asset BTC vs ETH (exploratory, fragile)
+
+On aggTrades, ETH appears to lead BTC at coarse scales (+50 to +250 ms). The direction is
+**sensitive to the price proxy** (a cleaner synthetic midpoint or micro-price can flip it), so this
+is presented as a secondary result, not a core finding.
+
+### LOBSTER AAPL vs MSFT (21 June 2012, NASDAQ midpoints)
+
+Quote-midpoint sanity check on equity (one day, noisier than crypto). At j=8, AAPL leads MSFT by
+about 70 ms. Confirms the estimator runs on quote midpoints, not only on crypto trades.
+
+### Monte Carlo
+
+Reduced-scale reproduction of the paper's Section 5 design (constant and Heston volatility,
+Lo-MacKinlay non-synchronicity, comparison against previous-tick interpolation). Fine scales are
+recovered and the non-synchronous estimator dominates interpolation under strong asynchrony. This
+validates the design, not the full Tables 2-3 (which need the paper's n = 30000, 1000 paths).
 
 ---
 
 ## Project layout
 
-> See also: **`DATA_LAYOUT.md`** for the `data/` tree and source URLs, and
-> **`OUTPUTS_INDEX.md`** for a per-run map (what each `outputs/<run>/` folder represents).
-
 ```
 hk_leadlag_replication/
-├── pyproject.toml              # Package definition (Pydantic, Numba, pywt, pyarrow, …)
+├── pyproject.toml              # package definition
 ├── requirements.txt
-├── setup.bat / setup.sh        # One-shot venv + install + tests
-├── main.py                     # CLI entry point for YAML-driven experiments
-├── main.ipynb                  # Top-level orchestrator notebook
-├── DATA_LAYOUT.md              # Expected data/ tree + source URLs + regen commands
-├── OUTPUTS_INDEX.md            # Per-run map (config + finding for each outputs/<run>/)
 │
-├── hk_leadlag/                 # Package source
-│   ├── base.py                 # ABCs: BaseLeadLagEstimator, BaseSimulator, NonSyncSeries
+├── hk_leadlag/                 # package source
+│   ├── base.py                 # ABCs: BaseLeadLagEstimator, NonSyncSeries, ...
 │   ├── config.py               # Pydantic ExperimentConfig + sub-configs
-│   ├── wavelet.py              # Daubechies filters, autocorrelation wavelet
+│   ├── wavelet.py              # Daubechies filters, autocorrelation wavelet, transfer function
 │   ├── estimators/
-│   │   ├── hayashi_yoshida.py  # Numba-jitted HY cross-cov
-│   │   ├── wavelet_leadlag.py  # Core HK estimator
-│   │   ├── hry.py              # Single-scale baseline
+│   │   ├── hayashi_yoshida.py  # Numba-jitted HY cross-covariance
+│   │   ├── wavelet_leadlag.py  # core HK estimator
+│   │   ├── hry.py              # single-scale baseline
 │   │   └── dobrev_schaumburg.py
 │   ├── simulation/
-│   │   ├── brownian.py         # Bivariate Brownian via circulant embedding
+│   │   ├── brownian.py         # bivariate Brownian via circulant embedding
 │   │   ├── heston.py
-│   │   └── sampling.py         # Regular + Lo-MacKinlay sampling
+│   │   └── sampling.py         # regular + Lo-MacKinlay sampling
 │   ├── data/
-│   │   ├── binance.py          # Binance aggTrades (auto-detect μs/ms)
-│   │   ├── lobster.py          # LOBSTER message+orderbook → midpoints
-│   │   ├── csv_loader.py
+│   │   ├── binance.py          # Binance aggTrades (auto-detect us/ms)
+│   │   ├── binance_midpoint.py # synthetic midpoint / micro-price from aggTrades
+│   │   ├── bybit.py            # Bybit public archive
+│   │   ├── kraken.py           # Kraken REST trades
+│   │   ├── lobster.py          # LOBSTER message + orderbook to midpoints
 │   │   └── preprocess.py
 │   ├── analysis/
 │   │   ├── monte_carlo.py
-│   │   ├── bootstrap.py        # Moving-block bootstrap on ticks
-│   │   ├── multiple_testing.py # Romano-Wolf-style and BH p-value adjustments
 │   │   ├── event_study.py
-│   │   ├── experiment.py
-│   │   └── artifacts.py        # ArtifactStore (reproducible experiment outputs)
+│   │   ├── experiment.py       # YAML-config experiment runner
+│   │   └── artifacts.py        # ArtifactStore (reproducible outputs)
 │   └── viz/plots.py            # LeadLagPlotter: heatmap, contrast, scalogram, MC boxplots
 │
 ├── scripts/
-│   ├── run_empirical.py        # CLI: load data → fit → save artefacts
-│   ├── run_bootstrap.py        # CLI: bootstrap CI on an existing run
-│   ├── audit_sign_convention.py  # Sign-convention sanity test
-│   ├── run_lobster_pair.py     # CLI: LOBSTER midpoint pair experiment
+│   ├── run_empirical.py            # cross-asset (config-driven)
+│   ├── run_cross_exchange.py       # Binance vs Bybit (same asset)
+│   ├── run_cross_exchange_kraken.py# Binance vs Kraken (same asset, core)
+│   ├── run_cross_market_btc.py     # spot vs perp (same asset, --symbol generic)
+│   ├── run_usdt_vs_coin_perp.py    # USDT-M vs COIN-M perp
+│   ├── run_perday_distribution.py  # per-day theta_hat distribution + histograms
+│   ├── run_monte_carlo_diagnostic.py
+│   ├── run_lobster_pair.py         # LOBSTER midpoint pair
+│   ├── audit_sign_convention.py    # sign-convention sanity test
+│   ├── verify_remark2_filter_invariance.py  # Remark 2 check (db10 vs sym10)
 │   └── download_lobster_sample.py
 │
 ├── notebooks/
-│   ├── 01_walkthrough.ipynb    # Pedagogical step-by-step
-│   └── 02_main_narrative.ipynb # Defense-ready story
+│   └── 03_final_narrative.ipynb# defense narrative (from-artifacts mode)
 │
-├── tests/                      # pytest (31 tests)
+├── tests/                      # pytest (27 tests)
 ├── configs/                    # YAML experiment configs
-└── outputs/                    # Generated artefacts
-    └── <YYYY-MM-DD>_<sym1>_<sym2>_<market>_…/
-        ├── config.json         # Experiment config (always tracked in git)
-        ├── metadata.json       # Timings, n_ticks, θ̂ (tracked)
-        ├── series_stats.json   # Tick density stats (tracked)
-        ├── summary.csv         # One row per scale (tracked)
-        ├── result.pkl          # Full LeadLagResult (NOT tracked, regenerable)
-        ├── heatmap.png         # NOT tracked (regenerable)
-        ├── contrast.png        # NOT tracked
-        ├── data_overview.png   # NOT tracked
+└── outputs/                    # generated artefacts
+    └── <run>/
+        ├── config.json         # experiment config (tracked)
+        ├── metadata.json       # timings, n_ticks, theta_hat (tracked)
+        ├── series_stats.json   # tick-density stats (tracked)
+        ├── summary.csv         # one row per scale (tracked)
+        ├── result.pkl          # full LeadLagResult (not tracked, regenerable)
+        ├── heatmap.png         # not tracked (regenerable)
         └── log.txt             # stdout capture
 ```
 
@@ -210,20 +203,18 @@ hk_leadlag_replication/
 
 ## Citation
 
-This is an independent academic implementation. The paper:
+Independent academic implementation. Paper:
 
-> Hayashi T. and Koike Y. (2020). "Multi-scale analysis of lead-lag relationships in
-> high-frequency financial markets." arXiv:1708.03992. SIAM J. Financial Math.
-> companion paper: arXiv:1612.01232.
+> Hayashi T. and Koike Y. (2020). Multi-scale analysis of lead-lag relationships in high-frequency
+> financial markets. arXiv:1708.03992. Companion paper: arXiv:1612.01232.
 
-Companion course material (linked in `notes.md`):
+Course material (linked in the project notes):
 
-> M. Garcin (2017-2018). *Aspects multifréquentiels du risque*. ESILV course slides.
+> M. Garcin (2017-2018). Aspects multifrequentiels du risque. ESILV course slides.
 
 ---
 
 ## License
 
-Educational replication. Original paper © Hayashi & Koike, CC-BY arXiv.
-LOBSTER sample data © TU Berlin, redistributed under the terms of their academic licence.
-Binance Data Vision is a public CDN; no licence issue for academic redistribution.
+Educational replication. Original paper (c) Hayashi and Koike, arXiv. LOBSTER sample data (c) TU
+Berlin, redistributed under their academic licence. Binance Data Vision is a public CDN.

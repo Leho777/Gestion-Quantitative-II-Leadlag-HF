@@ -1,5 +1,5 @@
 @echo off
-REM Setup script for HK-LeadLag - Windows
+REM Setup script for HK-LeadLag — Windows
 REM Usage: double-click or run in cmd
 
 echo === Creating virtual environment ===
@@ -22,6 +22,5 @@ pytest -q --tb=short
 echo.
 echo === Setup complete. ===
 echo To activate later: .venv\Scripts\activate.bat
-echo To run the notebook: jupyter lab notebooks/01_walkthrough.ipynb
-echo To run the main pipeline: python main.py --config configs/simulation_default.yaml
+echo To run the notebook: jupyter lab notebooks/03_final_narrative.ipynb
 pause

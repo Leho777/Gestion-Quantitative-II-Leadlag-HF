@@ -111,7 +111,6 @@ def main() -> int:
     elif r_hy.theta_hat[0] < 0 and median_hk < 0:
         print("  theta_j < 0  <=>  sym1 leads sym2  (SIGN INVERTED FROM INTUITION)")
         print("  In our BTC/ETH run: theta>0 at j=4..8 means ETH (sym2) leads BTC (sym1).")
-        print("  YOU MUST CORRECT YOUR PREVIOUS NARRATIVE.")
     else:
         print("  Mixed signs between HY and HK - implementation bug, needs investigation.")
     return 0

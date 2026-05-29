@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Setup script for HK-LeadLag - Linux / macOS
+# Setup script for HK-LeadLag — Linux / macOS
 # Usage: chmod +x setup.sh && ./setup.sh
 
 set -e
@@ -19,5 +19,4 @@ pytest -q --tb=short || true
 echo ""
 echo "=== Setup complete. ==="
 echo "To activate later: source .venv/bin/activate"
-echo "To run the notebook: jupyter lab notebooks/01_walkthrough.ipynb"
-echo "To run the main pipeline: python main.py --config configs/simulation_default.yaml"
+echo "To run the notebook: jupyter lab notebooks/03_final_narrative.ipynb"
